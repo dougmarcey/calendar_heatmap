@@ -16,7 +16,7 @@ calendar_heatmap.create = function(opts) {
     d3.selection.prototype.moveToFront = function() {
         return this.each(function() {
             this.parentNode.appendChild(this);
-      });
+        });
     };
 
     d3.selection.prototype.moveToBack = function() {
@@ -68,6 +68,7 @@ calendar_heatmap.create = function(opts) {
         simple_tooltip: opts.simple_tooltip ? opts.simple_tooltip : false,
         show_legend: _.isUndefined(opts.show_legend) ? true : opts.show_legend,
         legend_title: opts.legend_title ? opts.legend_title : null,
+        months_expanded: opts.months_expanded ? opts.months_expanded : false,
         //// miscellaneous
         accent_color: opts.accent_color ? opts.accent_color : "#333",
         show_toggle: _.isUndefined(opts.show_toggle) ? true : opts.show_toggle,
@@ -207,7 +208,7 @@ calendar_heatmap.create = function(opts) {
         _.keys(options.color_scheme).slice(-1)[0]);
 
     var palette = _.isArray(options.color_scheme) ? options.color_scheme : options.color_scheme[color_opt],
-        color_domain = d3.range(min_val, max_val + (max_val - min_val)/(color_opt - 1), (max_val - min_val)/(color_opt - 1));
+        color_domain = d3.range(min_val, max_val + (max_val - min_val) / (color_opt - 1), (max_val - min_val) / (color_opt - 1));
 
     if (options.discrete_scale) {
         var color_scale = d3.scale.quantize()
@@ -235,13 +236,13 @@ calendar_heatmap.create = function(opts) {
     var tile_width = options.tile_width,
         tile_height = options.tile_height;
 
-    var w = tile_width*(wn + mn + 1) + margin.left + margin.right,
-        h = tile_height*(options.weekdays_only ? 5 : 7)*(options.show_legend ? 2 : 1.2) + margin.top + margin.bottom;
+    var w = tile_width * (wn + mn + 1) + margin.left + margin.right,
+        h = tile_height * (options.weekdays_only ? 5 : 7) * (options.show_legend ? 2 : 1.2) + margin.top + margin.bottom;
 
     // scales and axes
     var y_scale = d3.scale.ordinal()
         .domain(days_of_week)
-        .rangeBands([0, (tile_height*(options.weekdays_only ? 5 : 7))]);
+        .rangeBands([0, (tile_height * (options.weekdays_only ? 5 : 7))]);
 
     var y_axis = d3.svg.axis()
         .scale(y_scale)
@@ -264,7 +265,7 @@ calendar_heatmap.create = function(opts) {
 
     // place title on chart
     svg.append("text")
-        .attr("x", margin.left + tile_width/2)
+        .attr("x", margin.left + tile_width / 2)
         .attr("y", +(margin.top - (+options.title_size - 5)))
         .text(options.title)
         .style("font-size", options.title_size + "px")
@@ -293,7 +294,7 @@ calendar_heatmap.create = function(opts) {
     function drawMonthLabels() {
         // place month labels on chart
         month_labels = svg.append("g")
-            .attr("transform", "translate(" + margin.left + ", " + (tile_height*(options.weekdays_only ? 5 : 7) + margin.top + 12) + ")")
+            .attr("transform", "translate(" + margin.left + ", " + (tile_height * (options.weekdays_only ? 5 : 7) + margin.top + 12) + ")")
             .moveToBack();
 
         month_labels.selectAll("text")
@@ -301,7 +302,7 @@ calendar_heatmap.create = function(opts) {
             .enter()
             .append("text")
             .attr("x", function(d) {
-                return (d.week_number)*tile_width + (d.month_number)*tile_width - ((d.weeks - 1)*tile_width) + (d.weeks - 1)*tile_width/2 - 2;
+                return (d.week_number) * tile_width + (d.month_number) * tile_width - ((d.weeks - 1) * tile_width) + (d.weeks - 1) * tile_width / 2 - 2;
             })
             .attr("y", 0)
             .attr("fill", options.accent_color)
@@ -319,7 +320,7 @@ calendar_heatmap.create = function(opts) {
         var toggle_width = 110;
 
         var layout_toggle = svg.append("g")
-            .attr("transform", "translate(" + (tile_width*(wn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
+            .attr("transform", "translate(" + (tile_width * (wn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
             .attr("style", "font-size: 12px; cursor: pointer");
 
         var toggle_shape = layout_toggle.append("rect")
@@ -345,10 +346,10 @@ calendar_heatmap.create = function(opts) {
         .enter()
         .append("rect")
         .attr("x", function(d) {
-          return d.week_number*tile_width + margin.left;
+            return d.week_number * tile_width + margin.left;
         })
         .attr("y", function(d) {
-            return d.dow*tile_height + margin.top;
+            return d.dow * tile_height + margin.top;
         })
         .attr("rx", 1)
         .attr("width", tile_width)
@@ -364,7 +365,7 @@ calendar_heatmap.create = function(opts) {
     // configure legend
     function drawLegend() {
         var leg_width = 150,
-            y_pos = tile_height*(options.weekdays_only ? 5 : 7) + 48 + margin.top;
+            y_pos = tile_height * (options.weekdays_only ? 5 : 7) + 48 + margin.top;
 
         var legend_group = svg.append("g")
             .classed("legend", true);
@@ -375,12 +376,12 @@ calendar_heatmap.create = function(opts) {
 
         _.forEach(palette, function(c, i) {
             legend.append("stop")
-                .attr("offset", i*(100/(color_opt - 1)) + "%")
+                .attr("offset", i * (100 / (color_opt - 1)) + "%")
                 .attr("stop-color", c);
         });
 
         legend_group.append("rect")
-            .attr("x", margin.left + tile_width/2)
+            .attr("x", margin.left + tile_width / 2)
             .attr("y", y_pos)
             .attr("width", leg_width)
             .attr("height", 12)
@@ -389,7 +390,7 @@ calendar_heatmap.create = function(opts) {
         legend_group.append("text")
             .attr("text-anchor", "start")
             .text(options.legend_title ? options.legend_title : options.fill_var)
-            .attr("x", margin.left + tile_width/2)
+            .attr("x", margin.left + tile_width / 2)
             .attr("y", y_pos - 7)
             .attr("style", "font-size: 12px; font-weight: 600")
             .attr("fill", options.accent_color);
@@ -397,7 +398,7 @@ calendar_heatmap.create = function(opts) {
         legend_group.append("text")
             .attr("text-anchor", "middle")
             .text(d3.format(options.numeric_format)(d3.round(min_val, options.round)))
-            .attr("x", margin.left + tile_width/2)
+            .attr("x", margin.left + tile_width / 2)
             .attr("y", y_pos + 25)
             .style("font-size", "11px")
             .attr("fill", options.accent_color);
@@ -405,7 +406,7 @@ calendar_heatmap.create = function(opts) {
         legend_group.append("text")
             .attr("text-anchor", "middle")
             .text(d3.format(options.numeric_format)(d3.round(max_val, options.round)))
-            .attr("x", margin.left + leg_width + tile_width/2)
+            .attr("x", margin.left + leg_width + tile_width / 2)
             .attr("y", y_pos + 25)
             .style("font-size", "11px")
             .attr("fill", options.accent_color);
@@ -418,19 +419,19 @@ calendar_heatmap.create = function(opts) {
     //// toggle the layout of months
 
     // initial layout of months
-    var months_expanded = false;
-    var tiles_width = tile_width*(wn + 1);
+    var months_expanded = options.months_expanded;
+    var tiles_width = tile_width * (wn + 1);
 
     function expandMonths() {
-        tiles_width = tile_width*(wn + mn + 1);
+        tiles_width = tile_width * (wn + mn + 1);
 
         drawMonthLabels();
 
         layout_toggle.style("pointer-events", "none")
             .transition()
-            .delay(1/(mn + 5)*500)
+            .delay(1 / (mn + 5) * 500)
             .duration(1000)
-            .attr("transform", "translate(" + (tile_width*(wn + mn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
+            .attr("transform", "translate(" + (tile_width * (wn + mn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
             // prevent multiple clicks before layout is finished transitioning
             .each("end", function() {
                 d3.select(this).style("pointer-events", "auto");
@@ -438,18 +439,18 @@ calendar_heatmap.create = function(opts) {
 
         toggle_text.transition()
             .attr("x", 8)
-            .delay(1/(mn + 5)*500)
+            .delay(1 / (mn + 5) * 500)
             .duration(1000)
             .text("« collapse months");
 
         tiles.style("pointer-events", "none")
             .transition()
             .delay(function(d) {
-                return 1/(d.month_number + 5)*500;
+                return 1 / (d.month_number + 5) * 500;
             })
             .duration(1000)
             .attr("x", function(d) {
-                return d.week_number*tile_width + d.month_number*tile_width + margin.left;
+                return d.week_number * tile_width + d.month_number * tile_width + margin.left;
             })
             // suppress mouseover events until (just after) transition is finished
             .each("end", function(d, i) {
@@ -460,8 +461,12 @@ calendar_heatmap.create = function(opts) {
         months_expanded = true;
     }
 
+    if (options.months_expanded) {
+        expandMonths();
+    }
+
     function collapseMonths() {
-        tiles_width = tile_width*(wn + 1);
+        tiles_width = tile_width * (wn + 1);
 
         month_labels.transition()
             // .delay(100)
@@ -471,9 +476,9 @@ calendar_heatmap.create = function(opts) {
 
         layout_toggle.style("pointer-events", "none")
             .transition()
-            .delay(1/(mn + 5)*500)
+            .delay(1 / (mn + 5) * 500)
             .duration(1000)
-            .attr("transform", "translate(" + (tile_width*(wn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
+            .attr("transform", "translate(" + (tile_width * (wn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
             // prevent multiple clicks before layout is finished transitioning
             .each("end", function() {
                 d3.select(this).style("pointer-events", "auto");
@@ -481,18 +486,18 @@ calendar_heatmap.create = function(opts) {
 
         toggle_text.transition()
             .attr("x", 11)
-            .delay(1/(mn + 5)*500)
+            .delay(1 / (mn + 5) * 500)
             .duration(1000)
             .text("expand months »");
 
         tiles.style("pointer-events", "none")
             .transition()
             .delay(function(d) {
-                return 1/(d.month_number + 5)*500;
+                return 1 / (d.month_number + 5) * 500;
             })
             .duration(1000)
             .attr("x", function(d) {
-                return d.week_number*tile_width + margin.left;
+                return d.week_number * tile_width + margin.left;
             })
             // suppress mouseover events until transition is finished
             .each("end", function(d, i) {
@@ -504,7 +509,7 @@ calendar_heatmap.create = function(opts) {
     //// handle layout toggle button events
     if (options.show_toggle) {
         layout_toggle
-            // mouseover
+        // mouseover
             .on("mouseover", function() {
                 toggle_shape.transition()
                     .duration(100)
@@ -533,118 +538,118 @@ calendar_heatmap.create = function(opts) {
         this_tile;
 
     tiles
-        // mouseover
+    // mouseover
         .on("mouseover", function(d) {
 
-        this_tile = d3.select(this);
+            this_tile = d3.select(this);
 
-        this_tile
-            .moveToFront()
-            .attr("stroke-width", 2.5)
-            .attr("stroke", options.accent_color)
-            .transition().duration(100)
-            .attr("height", tile_height*0.75)
-            .transition().duration(100)
-            .attr("height", tile_height);
+            this_tile
+                .moveToFront()
+                .attr("stroke-width", 2.5)
+                .attr("stroke", options.accent_color)
+                .transition().duration(100)
+                .attr("height", tile_height * 0.75)
+                .transition().duration(100)
+                .attr("height", tile_height);
 
-        // tooltipping
-        if (options.show_tooltip) {
-            var tiles_height = (options.weekdays_only ? 5 : 7)*tile_height,
-                tt_val_text = (options.legend_title ? options.legend_title : options.fill_var) + ": " +
+            // tooltipping
+            if (options.show_tooltip) {
+                var tiles_height = (options.weekdays_only ? 5 : 7) * tile_height,
+                    tt_val_text = (options.legend_title ? options.legend_title : options.fill_var) + ": " +
                     (_.isUndefined(d[options.fill_var]) ? "N/A" :
-                    d3.format(options.numeric_format)(d3.round(d[options.fill_var], options.round)));
-            if (!options.simple_tooltip) {
-                var tt_height = 60;
+                        d3.format(options.numeric_format)(d3.round(d[options.fill_var], options.round)));
+                if (!options.simple_tooltip) {
+                    var tt_height = 60;
 
-                var tt_below_pos = +this_tile.attr("y") + tile_height + 7 + tt_height,
-                    tt_above_pos = +this_tile.attr("y") - 7 - tt_height;
+                    var tt_below_pos = +this_tile.attr("y") + tile_height + 7 + tt_height,
+                        tt_above_pos = +this_tile.attr("y") - 7 - tt_height;
 
-                var flip_tt_up = tt_below_pos >= tiles_height + margin.top + tile_height*2,
-                    slide_tt_right = +this_tile.attr("x") + tile_width/2 - options.tooltip_width/2 <= margin.left,
-                    slide_tt_left = +this_tile.attr("x") + tile_width/2 + options.tooltip_width/2 - margin.left >= tiles_width;
+                    var flip_tt_up = tt_below_pos >= tiles_height + margin.top + tile_height * 2,
+                        slide_tt_right = +this_tile.attr("x") + tile_width / 2 - options.tooltip_width / 2 <= margin.left,
+                        slide_tt_left = +this_tile.attr("x") + tile_width / 2 + options.tooltip_width / 2 - margin.left >= tiles_width;
 
-                var slide_right_pos = +this_tile.attr("x") - (+this_tile.attr("x") - margin.left) + 7,
-                    slide_left_pos =  margin.left - options.tooltip_width + tiles_width - 7;
-                var tt_x_pos = +this_tile.attr("x") - (options.tooltip_width - tile_width)/2;
+                    var slide_right_pos = +this_tile.attr("x") - (+this_tile.attr("x") - margin.left) + 7,
+                        slide_left_pos = margin.left - options.tooltip_width + tiles_width - 7;
+                    var tt_x_pos = +this_tile.attr("x") - (options.tooltip_width - tile_width) / 2;
 
-                this_tile.tt_group = tile_group.append("g")
-                    .attr("transform", "translate(" + (slide_tt_right ? slide_right_pos :
-                        (slide_tt_left ? slide_left_pos : tt_x_pos)) +
-                        ", " + (flip_tt_up ? tt_above_pos : (tt_below_pos - tt_height)) + ")");
+                    this_tile.tt_group = tile_group.append("g")
+                        .attr("transform", "translate(" + (slide_tt_right ? slide_right_pos :
+                                (slide_tt_left ? slide_left_pos : tt_x_pos)) +
+                            ", " + (flip_tt_up ? tt_above_pos : (tt_below_pos - tt_height)) + ")");
 
-                this_tile.tt_group.append("rect")
-                    .attr("width", options.tooltip_width)
-                    .attr("height", tt_height)
-                    .attr("rx", 2)
-                    .attr("ry", 2)
-                    .style("fill", "#333");
+                    this_tile.tt_group.append("rect")
+                        .attr("width", options.tooltip_width)
+                        .attr("height", tt_height)
+                        .attr("rx", 2)
+                        .attr("ry", 2)
+                        .style("fill", "#333");
 
-                this_tile.tt_group.append("text")
-                            .text(tt_val_text)
-                            .style("font-size", "14px")
-                            .style("font-weight", 700)
-                            .attr("text-anchor", "middle")
-                            .attr("x", options.tooltip_width/2)
-                            .attr("y", tt_height/2 - 10)
-                            .attr("fill", "#eee");
+                    this_tile.tt_group.append("text")
+                        .text(tt_val_text)
+                        .style("font-size", "14px")
+                        .style("font-weight", 700)
+                        .attr("text-anchor", "middle")
+                        .attr("x", options.tooltip_width / 2)
+                        .attr("y", tt_height / 2 - 10)
+                        .attr("fill", "#eee");
 
-                this_tile.tt_group.append("text")
-                    .text(d.formatted_date)
-                    .style("font-size", "13px")
-                    .attr("text-anchor", "middle")
-                    .attr("x", options.tooltip_width/2)
-                    .attr("y", tt_height/2 + 16)
-                    .attr("fill", "#eee");
+                    this_tile.tt_group.append("text")
+                        .text(d.formatted_date)
+                        .style("font-size", "13px")
+                        .attr("text-anchor", "middle")
+                        .attr("x", options.tooltip_width / 2)
+                        .attr("y", tt_height / 2 + 16)
+                        .attr("fill", "#eee");
 
-                this_tile.tt_group.style("opacity", 0)
+                    this_tile.tt_group.style("opacity", 0)
                         .transition().delay(200).duration(200)
                         .style("opacity", 0.9);
-            } else {
-                this_tile.tt_group = svg.append("g")
-                    .attr("transform", "translate(" + (tiles_width + margin.left - tile_width/2) + ", " + (margin.top + tiles_height + (months_expanded ? 30 : 15)) + ")")
-                    .append("text")
-                    .attr("text-anchor", "end")
-                    .text(tt_val_text + " on " + d.day.format("ddd MMM DD, YYYY"))
-                    .style("font-size", "12px");
+                } else {
+                    this_tile.tt_group = svg.append("g")
+                        .attr("transform", "translate(" + (tiles_width + margin.left - tile_width / 2) + ", " + (margin.top + tiles_height + (months_expanded ? 30 : 15)) + ")")
+                        .append("text")
+                        .attr("text-anchor", "end")
+                        .text(tt_val_text + " on " + d.day.format("ddd MMM DD, YYYY"))
+                        .style("font-size", "12px");
 
-                this_tile.tt_group.style("opacity", 0)
+                    this_tile.tt_group.style("opacity", 0)
                         .transition().delay(200).duration(200)
                         .style("opacity", 0.9);
+                }
+
             }
 
-        }
+            //// fade/highlight labels
+            if (months_expanded) {
+                month_label_text = month_labels.selectAll("text")[0];
+                var this_month = _.map(_.filter(months_and_weeks, { month_number: d.month_number }), "month_number")[0];
 
-        //// fade/highlight labels
-        if (months_expanded) {
-            month_label_text = month_labels.selectAll("text")[0];
-            var this_month = _.map(_.filter(months_and_weeks, { month_number: d.month_number }), "month_number")[0];
+                // fade unselected month labels
+                d3.selectAll(_.xor(month_label_text, [month_label_text[this_month]]))
+                    .transition().duration(400).attr("fill", options.unselected_color);
 
-            // fade unselected month labels
-            d3.selectAll(_.xor(month_label_text, [month_label_text[this_month]]))
+                // highlight selected month label
+                d3.select(month_label_text[this_month])
+                    .transition().duration(400).attr("fill", options.accent_color);
+
+            }
+
+            // fade unselected y tick labels
+            d3.selectAll(_.xor(y_ticks, [y_ticks[d.dow]]))
                 .transition().duration(400).attr("fill", options.unselected_color);
 
-            // highlight selected month label
-            d3.select(month_label_text[this_month])
+            // highlight selected y tick label
+            d3.select(y_ticks[d.dow])
                 .transition().duration(400).attr("fill", options.accent_color);
+        })
+        // mouseout
+        .on("mouseout", function(d) {
 
-        }
+            this_tile.attr("stroke-width", 1.5)
+                .attr("stroke", options.stroke_color);
 
-        // fade unselected y tick labels
-        d3.selectAll(_.xor(y_ticks, [y_ticks[d.dow]]))
-            .transition().duration(400).attr("fill", options.unselected_color);
-
-        // highlight selected y tick label
-        d3.select(y_ticks[d.dow])
-            .transition().duration(400).attr("fill", options.accent_color);
-    })
-    // mouseout
-    .on("mouseout", function(d) {
-
-        this_tile.attr("stroke-width", 1.5)
-            .attr("stroke", options.stroke_color);
-
-        this_tile.tt_group.remove();
-    });
+            this_tile.tt_group.remove();
+        });
 
     // click
     if (options.on_click) {
