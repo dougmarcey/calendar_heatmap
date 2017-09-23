@@ -648,8 +648,9 @@ calendar_heatmap.create = function(opts) {
 
             this_tile.attr("stroke-width", 1.5)
                 .attr("stroke", options.stroke_color);
-
-            this_tile.tt_group.remove();
+            if (options.show_tooltip) {
+                this_tile.tt_group.remove();
+            }
         });
 
     // click
