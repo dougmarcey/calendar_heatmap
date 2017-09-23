@@ -426,22 +426,23 @@ calendar_heatmap.create = function(opts) {
         tiles_width = tile_width * (wn + mn + 1);
 
         drawMonthLabels();
+        if (options.show_toggle) {
+            layout_toggle.style("pointer-events", "none")
+                .transition()
+                .delay(1 / (mn + 5) * 500)
+                .duration(1000)
+                .attr("transform", "translate(" + (tile_width * (wn + mn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
+                // prevent multiple clicks before layout is finished transitioning
+                .each("end", function() {
+                    d3.select(this).style("pointer-events", "auto");
+                });
 
-        layout_toggle.style("pointer-events", "none")
-            .transition()
-            .delay(1 / (mn + 5) * 500)
-            .duration(1000)
-            .attr("transform", "translate(" + (tile_width * (wn + mn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
-            // prevent multiple clicks before layout is finished transitioning
-            .each("end", function() {
-                d3.select(this).style("pointer-events", "auto");
-            });
-
-        toggle_text.transition()
-            .attr("x", 8)
-            .delay(1 / (mn + 5) * 500)
-            .duration(1000)
-            .text("« collapse months");
+            toggle_text.transition()
+                .attr("x", 8)
+                .delay(1 / (mn + 5) * 500)
+                .duration(1000)
+                .text("« collapse months");
+        }
 
         tiles.style("pointer-events", "none")
             .transition()
